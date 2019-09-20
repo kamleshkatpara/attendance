@@ -1,4 +1,5 @@
 const Attendance = require('../models/attendance.model');
+const moment = require('moment');
 
 exports.set = (req, res) => {
 
@@ -44,10 +45,10 @@ if (Object.keys(req.body).length == 0) {
 }
 
 Attendance.find({ userid: req.body.userid, timestamp: {
-    $lte : new Date().toISOString(),
-    $gt: new Date(req.body.timestamp).toISOString()
+    $lt : moment(req.body.timestamp).add(1, 'days').toISOString(),
+    $gte: moment(req.body.timestamp).toISOString()
  } })
     .then(attendanceData => {
-        console.log(attendanceData);
+     res.send({attendanceData: attendanceData});
     })
 }
